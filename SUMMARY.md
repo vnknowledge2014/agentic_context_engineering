@@ -2,7 +2,7 @@
 
 ## ✅ Hoàn Thành
 
-Đã refactor hoàn toàn ACE Framework từ OOP sang **Functional Programming** với **Railway-Oriented Programming**.
+Đã refactor hoàn toàn ACE Framework từ OOP sang **Functional Programming** với **Railway-Oriented Programming** và **Streaming Response**.
 
 ## 📊 Kết Quả
 
@@ -193,6 +193,7 @@ python main.py
 ✅ **100% Type-Safe** - Strong typing với dataclasses
 ✅ **0 Mutable State** - Tất cả immutable
 ✅ **Pure Functions** - ~30 pure functions
+✅ **Streaming Response** - Real-time token-by-token display
 
 ### Architecture
 
@@ -216,8 +217,9 @@ python main.py
 2. ✅ **Railway-Oriented Programming** - Type-safe error handling
 3. ✅ **Functional Core - Imperative Shell** - Clear separation
 4. ✅ **ACE Framework (ICLR 2026)** - Tuân theo đúng paper
+5. ✅ **Streaming Response** - Real-time UX
 
-**Kết quả:** Code ngắn gọn hơn, dễ maintain hơn, type-safe hơn, và tuân theo đúng nguyên lý ACE!
+**Kết quả:** Code ngắn gọn hơn, dễ maintain hơn, type-safe hơn, streaming response, và tuân theo đúng nguyên lý ACE!
 
 ---
 

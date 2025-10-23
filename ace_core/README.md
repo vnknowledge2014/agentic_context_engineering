@@ -37,6 +37,22 @@ Query → Generator → Trajectory → Reflector → Insights → Curator → De
 - **Context Bullets** - Structured, itemized knowledge units
 - **Railway-Oriented Programming** - Error handling với Result types
 
+## 🌊 Streaming Response
+
+Hệ thống hỗ trợ **streaming response** - hiển thị token-by-token:
+
+```python
+# Interactive mode - streaming mặc định
+python main.py
+
+# Demo mode - streaming mặc định
+python main.py demo
+```
+
+✅ Real-time response
+✅ Better user experience
+✅ Vẫn giữ functional principles
+
 ## 🚀 Chạy Hệ Thống
 
 ### Prerequisites

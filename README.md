@@ -94,6 +94,25 @@ python main.py demo
 python main.py
 ```
 
+## 🌊 Streaming Response
+
+**Real-time token-by-token response** cho trải nghiệm tốt hơn:
+
+```python
+# Streaming mode
+async for chunk in ace.process_query_stream(query):
+    print(chunk, end='', flush=True)
+# Response hiển thị ngay lập tức
+
+# Non-streaming mode
+result = await ace.process_query(query)
+# Đợi response hoàn chỉnh
+```
+
+✅ **Better UX** - Thấy response ngay lập tức
+✅ **Perceived Speed** - Cảm giác nhanh hơn
+✅ **Functional** - Vẫn giữ pure functions cho learning
+
 ## 💡 Functional Programming Features
 
 ### Pure Functions
