@@ -48,9 +48,13 @@ ACE/
 ### Đặc Điểm Chính
 
 ✅ **Incremental Delta Updates** - Không rewrite toàn bộ context
+
 ✅ **Grow-and-Refine** - Mở rộng và tinh chỉnh liên tục
+
 ✅ **Context Bullets** - Structured knowledge units
+
 ✅ **No Context Collapse** - Giữ được detailed information
+
 ✅ **Self-Improving** - Học từ execution feedback
 
 ## 🚀 Quick Start
@@ -110,7 +114,9 @@ result = await ace.process_query(query)
 ```
 
 ✅ **Better UX** - Thấy response ngay lập tức
+
 ✅ **Perceived Speed** - Cảm giác nhanh hơn
+
 ✅ **Functional** - Vẫn giữ pure functions cho learning
 
 ## 💡 Functional Programming Features
@@ -222,9 +228,13 @@ context = merge_delta(context, delta)
 ### Tại Sao Functional?
 
 ✅ **Testable** - Pure functions dễ test
+
 ✅ **Composable** - Functions có thể compose
+
 ✅ **Predictable** - No hidden state
+
 ✅ **Concurrent** - No shared mutable state
+
 ✅ **Maintainable** - Clear separation of concerns
 
 ## 🔧 Commands (Interactive Mode)
@@ -247,12 +257,19 @@ context = merge_delta(context, delta)
 ## 🎯 Ưu Điểm
 
 ✅ **Minimal Code** - Chỉ 5 files core, ~500 lines
+
 ✅ **Functional** - Pure functions, immutable data
+
 ✅ **Type-Safe** - Strong typing với dataclasses
+
 ✅ **Error Handling** - Railway-oriented programming
+
 ✅ **ACE-Compliant** - Tuân theo đúng ICLR 2026 paper
+
 ✅ **No Context Collapse** - Incremental delta updates
+
 ✅ **Self-Improving** - Learns from execution feedback
+
 ✅ **Testable** - Pure functions dễ test
 
 ## 📚 Tài Liệu Tham Khảo
