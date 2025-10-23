@@ -24,7 +24,7 @@ async def demo_mode(ace: ACEFramework) -> None:
         print(f"Query {i}: {query}")
         print('='*60)
         
-        print(f"\n🤖 Response: ", end='', flush=True)
+        print(f"\n🤖 Response:")
         async for chunk in ace.process_query_stream(query):
             print(chunk, end='', flush=True)
         print()  # New line
@@ -68,7 +68,7 @@ async def interactive_mode(ace: ACEFramework) -> None:
                 continue
             
             # Process query with streaming
-            print(f"\n🤖 ACE: ", end='', flush=True)
+            print(f"\n🤖 ACE:")
             async for chunk in ace.process_query_stream(user_input):
                 print(chunk, end='', flush=True)
             print()  # New line
