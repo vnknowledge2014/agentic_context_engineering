@@ -127,16 +127,29 @@ class ACEFramework:
     async def process_query_stream(self, query: str):
         """Process query with streaming response"""
         context = self.curator.get_context()
-        bullets = get_relevant_bullets(context, query)
-        context_text = build_context_prompt(bullets)
         
-        prompt = f"""{query}
+        # Get recent conversation bullets
+        conv_bullets = [b for b in context.bullets.values() if "conversation" in b.tags]
+        conv_bullets.sort(key=lambda x: x.created_at, reverse=True)
+        recent_conv = conv_bullets[:1]
+        
+        is_continue = query.strip().lower() in ['continue', 'tiếp tục']
+        
+        if is_continue and recent_conv:
+            last_conv = recent_conv[0].content
+            prompt = f"""{last_conv}
 
-Provide a brief answer in this format:
-STEPS: [step1; step2; step3]
-OUTCOME: your answer here
-SUCCESS: true
-USED_BULLETS: []"""
+Continue from where you stopped. Do not repeat, just continue:"""
+        elif recent_conv:
+            context_text = build_context_prompt(recent_conv)
+            prompt = f"""Previous conversation:
+{context_text}
+
+New query: {query}
+
+Answer:"""
+        else:
+            prompt = query
         
         full_response = ""
         async for result in self.client.generate_stream(prompt):
@@ -150,6 +163,15 @@ USED_BULLETS: []"""
         
         # Parse and learn from response
         trajectory = parse_trajectory_response(query, full_response)
+        
+        # Always save full query-response pair as context
+        from functional_core import create_bullet
+        query_bullet = create_bullet(f"Q: {query}\nA: {full_response}", ["conversation"])
+        from ace_types import DeltaUpdate
+        from datetime import datetime
+        conv_delta = DeltaUpdate(bullets=(query_bullet,), timestamp=datetime.now())
+        self.curator.apply_delta(conv_delta)
+        
         insights_result = await self.reflector.reflect(trajectory)
         
         match insights_result:
