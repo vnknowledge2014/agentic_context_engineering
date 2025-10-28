@@ -65,8 +65,8 @@ class OllamaClient:
             "stream": False,
             "options": {
                 "temperature": self.config.temperature,
-                "num_predict": min(self.config.max_tokens, 512),
-                "num_ctx": min(self.config.context_window, 2048)
+                "num_predict": min(self.config.max_tokens, 128),
+                "num_ctx": min(self.config.context_window, 512)
             }
         }
         
@@ -102,8 +102,8 @@ class OllamaClient:
             "stream": True,
             "options": {
                 "temperature": self.config.temperature,
-                "num_predict": min(self.config.max_tokens, 512),
-                "num_ctx": min(self.config.context_window, 2048)
+                "num_predict": min(self.config.max_tokens, 128),
+                "num_ctx": min(self.config.context_window, 512)
             }
         }
         

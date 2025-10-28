@@ -1,33 +1,150 @@
 # ACE Framework - Agentic Context Engineering
 
-**Functional Programming + Railway-Oriented Programming Implementation**
+**Functional Programming + Railway-Oriented Programming + Advanced AI Tools**
 
 ## 🎯 Tổng Quan
 
 Implementation hoàn chỉnh của **Agentic Context Engineering** (ICLR 2026) với:
 - **Functional Programming** - Pure functions, immutable data
 - **Railway-Oriented Programming** - Error handling với Result types
-- **Functional Core - Imperative Shell** - Tách biệt business logic và side effects
 - **ACE Framework** - Generator, Reflector, Curator theo đúng paper
+- **Advanced Tools** - Thinking, Search, Deep Research (như OpenAI)
+
+## 🚀 Tính Năng Nổi Bật
+
+### 🧠 Native Thinking Support
+- Hỗ trợ models có native thinking (Qwen3, DeepSeek-R1)
+- Hiển thị quá trình suy nghĩ real-time
+- Timeout 300s cho thinking phức tạp
+- Toggle `/thinking on|off`
+
+### 🔍 Web Search (như OpenAI)
+- Search trong context đã học
+- Search trên web qua DuckDuckGo API
+- Hiển thị nguồn: 📚 Context hoặc 🌐 Web
+- Toggle `/web on|off`
+
+### 🔬 Deep Research (như OpenAI)
+- Multi-step research với 4 bước
+- Tổng hợp từ nhiều nguồn
+- Báo cáo toàn diện có cấu trúc
+- Hỗ trợ web search
+
+### 🌊 Streaming Response
+- Real-time token-by-token response
+- Hiển thị thinking process
+- Better UX, perceived speed
 
 ## 📁 Cấu Trúc Project
 
 ```
-ACE/
-├── ace_core/
-│   ├── ace_types.py          # Type definitions (immutable)
-│   ├── functional_core.py    # Pure functions (no side effects)
-│   ├── imperative_shell.py   # Side effects (I/O, logging)
-│   ├── ace.py               # ACE Framework implementation
-│   ├── main.py              # Entry point
-│   ├── test_functional.py   # Functional tests
-│   ├── requirements.txt
-│   └── README.md
-├── Agentic_Context_Engineer.pdf  # ICLR 2026 paper
-└── README.md                     # This file
+ace_core/
+├── ace_types.py          # Type definitions (immutable)
+├── functional_core.py    # Pure functions (no side effects)
+├── imperative_shell.py   # Side effects (I/O, API calls)
+├── ace.py               # ACE Framework implementation
+├── tools.py             # Thinking, Search, Research tools
+├── main.py              # Entry point
+├── test_functional.py   # Tests
+└── requirements.txt
 ```
 
-**Total: ~5 core files, ~500 lines of clean functional code**
+## 🚀 Quick Start
+
+### 1. Prerequisites
+
+```bash
+# Install Ollama
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Start Ollama
+ollama serve
+
+# Pull model (choose one)
+ollama pull qwen2.5-coder:1.5b  # Fast
+ollama pull qwen3:8b            # With native thinking
+```
+
+### 2. Install
+
+```bash
+cd ace_core
+pip install -r requirements.txt
+```
+
+### 3. Run
+
+```bash
+# Interactive mode
+python main.py
+
+# Demo mode
+python main.py demo
+```
+
+## 💬 Commands
+
+### Basic Commands
+- `help` - Hiển thị help
+- `stats` - Context statistics
+- `exit` - Thoát
+
+### AI Tools
+- `/think <query>` - Deep thinking với native support
+- `/search <query>` - Search context/web
+- `/research <topic>` - Deep research đa bước
+
+### Toggles
+- `/thinking on|off` - Bật/tắt native thinking mode
+- `/web on|off` - Bật/tắt web search (như OpenAI)
+
+## 🎮 Ví Dụ Sử dụng
+
+```bash
+👤 You: /web on
+✅ 🌐 Web search enabled (like OpenAI)
+
+👤 You: /search Python asyncio
+🔍 Searching...
+1. 🌐 asyncio is a library to write concurrent code...
+   🔗 https://docs.python.org/3/library/asyncio.html
+2. 📚 ACE uses asyncio for streaming responses...
+
+👤 You: /thinking on
+✅ Native thinking mode enabled
+
+👤 You: Giải phương trình x^2 - 5x + 6 = 0
+🤖 ACE:
+💭 [Thinking...] Đây là phương trình bậc 2...
+Tôi cần tìm a, b, c...
+Delta = b^2 - 4ac...
+
+🤖 [Answer:] Phương trình có 2 nghiệm: x1=2, x2=3
+
+👤 You: /research Quantum Computing
+🔬 Researching:
+🔍 Step 1: Searching knowledge sources...
+   Found 5 relevant sources
+   1. 🌐 Web: Quantum computing uses quantum bits...
+   2. 📚 Context: Quantum superposition allows...
+
+🤔 Step 2: Generating research questions...
+   Q1: What are the fundamental principles?
+   Q2: What are current applications?
+   Q3: What are the challenges?
+
+💡 Step 3: Researching answers...
+   ✓ Answered Q1
+   ✓ Answered Q2
+   ✓ Answered Q3
+
+📝 Step 4: Synthesizing comprehensive report...
+============================================================
+QUANTUM COMPUTING RESEARCH REPORT
+
+Executive Summary:
+...
+```
 
 ## 🧠 ACE Framework (ICLR 2026)
 
@@ -41,168 +158,55 @@ ACE/
    Trajectory           Insights            Delta Update
 ```
 
-1. **Generator** - Tạo reasoning trajectories từ queries
-2. **Reflector** - Trích xuất insights từ trajectories
-3. **Curator** - Tích hợp insights vào context (grow-and-refine)
+1. **Generator** - Tạo reasoning trajectories
+2. **Reflector** - Trích xuất insights
+3. **Curator** - Tích hợp vào context (grow-and-refine)
 
-### Đặc Điểm Chính
+### Đặc Điểm
 
-✅ **Incremental Delta Updates** - Không rewrite toàn bộ context
-
+✅ **Incremental Delta Updates** - Không rewrite context
 ✅ **Grow-and-Refine** - Mở rộng và tinh chỉnh liên tục
-
 ✅ **Context Bullets** - Structured knowledge units
+✅ **No Context Collapse** - Giữ detailed information
+✅ **Self-Improving** - Học từ feedback
 
-✅ **No Context Collapse** - Giữ được detailed information
+## 💡 Advanced Features
 
-✅ **Self-Improving** - Học từ execution feedback
-
-## 🚀 Quick Start
-
-### 1. Prerequisites
-
-```bash
-# Install Ollama
-curl -fsSL https://ollama.ai/install.sh | sh
-
-# Start Ollama server
-ollama serve
-
-# Pull model
-ollama pull qwen2.5-coder:1.5b
-```
-
-### 2. Install Dependencies
-
-```bash
-cd ace_core
-pip install -r requirements.txt
-```
-
-### 3. Run Tests
-
-```bash
-# Test functional core
-python test_functional.py
-```
-
-### 4. Run ACE System
-
-**Demo Mode:**
-```bash
-python main.py demo
-```
-
-**Interactive Mode:**
-```bash
-python main.py
-```
-
-## 🌊 Streaming Response
-
-**Real-time token-by-token response** cho trải nghiệm tốt hơn:
+### Native Thinking Support
 
 ```python
-# Streaming mode
-async for chunk in ace.process_query_stream(query):
-    print(chunk, end='', flush=True)
-# Response hiển thị ngay lập tức
-
-# Non-streaming mode
-result = await ace.process_query(query)
-# Đợi response hoàn chỉnh
+# Tự động phát hiện thinking tokens
+async for result in client.generate_stream(prompt, enable_thinking=True):
+    # Hiển thị: 💭 [Thinking...] <thinking process>
+    # Sau đó: 🤖 [Answer:] <final answer>
 ```
 
-✅ **Better UX** - Thấy response ngay lập tức
-
-✅ **Perceived Speed** - Cảm giác nhanh hơn
-
-✅ **Functional** - Vẫn giữ pure functions cho learning
-
-## 💡 Functional Programming Features
-
-### Pure Functions
+### Web Search Integration
 
 ```python
-# functional_core.py - No side effects
-def create_bullet(content: str, tags: List[str]) -> ContextBullet:
-    """Pure function - same input always gives same output"""
-    return ContextBullet(id=str(uuid.uuid4()), content=content, tags=tuple(tags))
-
-def update_bullet_feedback(bullet: ContextBullet, helpful: bool) -> ContextBullet:
-    """Returns new bullet, original unchanged (immutable)"""
-    return ContextBullet(
-        id=bullet.id,
-        content=bullet.content,
-        helpful_count=bullet.helpful_count + (1 if helpful else 0),
-        # ... other fields
-    )
+search_tool = SearchTool(enable_web_search=True)
+results = await search_tool.search(query, context_bullets)
+# Returns: context results + web results
 ```
 
-### Railway-Oriented Programming
+### Deep Research
 
 ```python
-# Success path
-Success(value) → bind(func) → Success(new_value) → ...
-
-# Failure path (short-circuits)
-Failure(error) → bind(func) → Failure(error) → ...
-
-# Pattern matching
-match result:
-    case Success(value):
-        # Handle success
-    case Failure(error):
-        # Handle error
+research_tool = DeepResearchTool(enable_web_search=True)
+report = await research_tool.research(topic, client, context)
+# 4-step process: Search → Questions → Answers → Synthesis
 ```
 
-### Immutable Data Structures
+## 📊 So Sánh Với OpenAI
 
-```python
-@dataclass(frozen=True)  # Immutable
-class ContextBullet:
-    id: str
-    content: str
-    helpful_count: int = 0
-    # Cannot be modified after creation
-```
-
-## 📊 Context Engineering
-
-### Context Bullets
-
-Mỗi bullet là một knowledge unit:
-
-```python
-ContextBullet(
-    id="uuid-123",
-    content="Strategy: Always validate input before processing",
-    helpful_count=5,
-    harmful_count=0,
-    tags=["strategy"]
-)
-```
-
-### Delta Updates
-
-Incremental updates thay vì full rewrite:
-
-```python
-# Old approach (context collapse risk)
-context = llm.rewrite(entire_context)  # ❌ Loses information
-
-# ACE approach (preserves information)
-delta = DeltaUpdate(bullets=(new_bullet1, new_bullet2))  # ✅
-context = merge_delta(context, delta)
-```
-
-### Grow-and-Refine Mechanism
-
-```python
-1. Grow   - Add new bullets from insights
-2. Prune  - Remove low-quality bullets
-3. Limit  - Keep top N most helpful bullets
-```
+| Feature | OpenAI | ACE Framework |
+|---------|--------|---------------|
+| Thinking | ✅ o1, o3 | ✅ Qwen3, DeepSeek-R1 |
+| Web Search | ✅ Paid | ✅ Free (DuckDuckGo) |
+| Deep Research | ✅ Paid | ✅ Free |
+| Context Learning | ❌ | ✅ ACE mechanism |
+| Streaming | ✅ | ✅ |
+| Cost | 💰💰💰 | 🆓 Free |
 
 ## 🎓 Kiến Trúc
 
@@ -211,9 +215,9 @@ context = merge_delta(context, delta)
 ```
 ┌─────────────────────────────────────┐
 │     Imperative Shell (I/O)          │
-│  - Ollama API calls                 │
-│  - Logging                          │
-│  - User input/output                │
+│  - Ollama API (with thinking)       │
+│  - Web search API                   │
+│  - Logging, User I/O                │
 └──────────────┬──────────────────────┘
                │
 ┌──────────────▼──────────────────────┐
@@ -225,59 +229,42 @@ context = merge_delta(context, delta)
 └─────────────────────────────────────┘
 ```
 
-### Tại Sao Functional?
+### Railway-Oriented Programming
 
-✅ **Testable** - Pure functions dễ test
+```python
+# Success path
+Success(value) → bind(func) → Success(new_value)
 
-✅ **Composable** - Functions có thể compose
+# Failure path (short-circuits)
+Failure(error) → bind(func) → Failure(error)
 
-✅ **Predictable** - No hidden state
+# Pattern matching
+match result:
+    case Success(value): ...
+    case Failure(error): ...
+```
 
-✅ **Concurrent** - No shared mutable state
+## 🔧 Configuration
 
-✅ **Maintainable** - Clear separation of concerns
+```python
+config = OllamaConfig(
+    url="http://localhost:11434",
+    model="qwen3:8b",           # Model with thinking
+    temperature=0.7,
+    max_tokens=512,
+    context_window=2048
+)
+```
 
-## 🔧 Commands (Interactive Mode)
+## 📈 Ưu Điểm
 
-- `stats` - Hiển thị context statistics
-- `help` - Hiển thị help
-- `exit` - Thoát system
-
-## 📈 So Sánh Với Cũ
-
-| Feature | Old (OOP) | New (Functional) |
-|---------|-----------|------------------|
-| Lines of code | 580KB+ (40+ files) | ~500 lines (5 files) |
-| Mutable state | ✅ Everywhere | ❌ None |
-| Side effects | ✅ Mixed with logic | ✅ Isolated |
-| Error handling | Try/catch | Railway-oriented |
-| Testability | Hard | Easy |
-| ACE compliant | ❌ No | ✅ Yes |
-
-## 🎯 Ưu Điểm
-
-✅ **Minimal Code** - Chỉ 5 files core, ~500 lines
-
+✅ **Minimal Code** - ~600 lines, 6 files
 ✅ **Functional** - Pure functions, immutable data
-
-✅ **Type-Safe** - Strong typing với dataclasses
-
-✅ **Error Handling** - Railway-oriented programming
-
-✅ **ACE-Compliant** - Tuân theo đúng ICLR 2026 paper
-
-✅ **No Context Collapse** - Incremental delta updates
-
-✅ **Self-Improving** - Learns from execution feedback
-
-✅ **Testable** - Pure functions dễ test
-
-## 📚 Tài Liệu Tham Khảo
-
-- **Paper**: Agentic Context Engineering (ICLR 2026)
-- **Pattern**: Functional Core - Imperative Shell
-- **Error Handling**: Railway-Oriented Programming (Scott Wlaschin)
-- **FP**: Functional Programming principles
+✅ **Type-Safe** - Strong typing
+✅ **Advanced Tools** - Thinking, Search, Research
+✅ **ACE-Compliant** - Tuân theo ICLR 2026 paper
+✅ **Free** - No API costs
+✅ **Extensible** - Dễ thêm tools mới
 
 ## 🚧 Troubleshooting
 
@@ -286,17 +273,21 @@ context = merge_delta(context, delta)
 curl http://localhost:11434/api/tags
 ```
 
-**Import errors?**
-```bash
-cd ace_core
-python -c "import ace_types; import functional_core; print('OK')"
-```
+**Thinking not showing?**
+- Cần model hỗ trợ (Qwen3, DeepSeek-R1)
+- Dùng `/thinking on`
 
-**Test functional core:**
-```bash
-python test_functional.py
-```
+**Web search not working?**
+- Check internet connection
+- DuckDuckGo API có thể rate limit
+
+## 📚 Tài Liệu
+
+- **Paper**: Agentic Context Engineering (ICLR 2026)
+- **Pattern**: Functional Core - Imperative Shell
+- **Error Handling**: Railway-Oriented Programming
+- **Models**: Qwen3, DeepSeek-R1 (thinking support)
 
 ---
 
-**ACE Framework - Where functional programming meets agentic AI!** 🚀
+**ACE Framework - Where functional programming meets advanced AI!** 🚀

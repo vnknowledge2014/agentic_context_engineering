@@ -11,29 +11,100 @@ from tools import ThinkingTool, SearchTool, DeepResearchTool
 from imperative_shell import log_info, log_success, log_error
 
 async def demo_mode(ace: ACEFramework) -> None:
-    """Demo mode with predefined queries"""
-    log_info("ACE Demo Mode - Agentic Context Engineering")
+    """Demo mode - Test all features"""
+    log_info("ACE Demo Mode - Testing All Features")
+    print("\n" + "="*60)
     
-    queries = [
-        "Agentic Context Engineering là gì?",
-        "Viết Python function tính fibonacci",
-        "Phân tích ưu nhược điểm của ACE framework"
-    ]
+    # 1. Basic ACE Query
+    print("\n🧪 Test 1: Basic ACE Query")
+    print("-" * 60)
+    query = "What is Agentic Context Engineering?"
+    print(f"Query: {query}")
+    print("\n🤖 Response:")
+    async for chunk in ace.process_query_stream(query):
+        print(chunk, end='', flush=True)
+    print()
+    stats = ace.get_context_stats()
+    print(f"📈 Context: {stats['total_bullets']} bullets learned")
     
-    for i, query in enumerate(queries, 1):
-        print(f"\n{'='*60}")
-        print(f"Query {i}: {query}")
-        print('='*60)
-        
-        print(f"\n🤖 Response:")
-        async for chunk in ace.process_query_stream(query):
-            print(chunk, end='', flush=True)
-        print()  # New line
-        
-        # Show stats
-        stats = ace.get_context_stats()
-        print(f"\n📈 Context: {stats['total_bullets']} bullets, "
-              f"version {stats['version']}\n")
+    # 2. Context Learning
+    print("\n" + "="*60)
+    print("\n🧪 Test 2: Context Learning")
+    print("-" * 60)
+    query = "Write a Python function to calculate factorial"
+    print(f"Query: {query}")
+    print("\n🤖 Response:")
+    async for chunk in ace.process_query_stream(query):
+        print(chunk, end='', flush=True)
+    print()
+    stats = ace.get_context_stats()
+    print(f"📈 Context: {stats['total_bullets']} bullets learned")
+    
+    # 3. Search in Context
+    print("\n" + "="*60)
+    print("\n🧪 Test 3: Search in Context")
+    print("-" * 60)
+    search_tool = SearchTool(enable_web_search=False)
+    context = ace.curator.get_context()
+    results = await search_tool.search("Python", list(context.bullets.values()))
+    print(f"🔍 Search 'Python': Found {len(results)} results")
+    for i, r in enumerate(results[:2], 1):
+        print(f"  {i}. {r['content'][:60]}...")
+    
+    # 4. Thinking Mode
+    print("\n" + "="*60)
+    print("\n🧪 Test 4: Deep Thinking")
+    print("-" * 60)
+    thinking_tool = ThinkingTool()
+    query = "Compare functional vs OOP"
+    print(f"Query: {query}")
+    print("\n🧠 Thinking:")
+    result = await thinking_tool.think(query, ace.client)
+    match result:
+        case Success(response):
+            print(response[:200] + "...")
+        case Failure(error):
+            print(f"❌ {error}")
+    
+    # 5. Web Search (if enabled)
+    print("\n" + "="*60)
+    print("\n🧪 Test 5: Web Search")
+    print("-" * 60)
+    search_tool_web = SearchTool(enable_web_search=True)
+    print("🔍 Searching 'Python programming'...")
+    web_results = await search_tool_web.search("Python programming", list(context.bullets.values()))
+    print(f"Found {len(web_results)} results (context + web)")
+    for i, r in enumerate(web_results[:2], 1):
+        source = "🌐" if r['source'] == 'web' else "📚"
+        print(f"  {i}. {source} {r['content'][:60]}...")
+    
+    # 6. Deep Research
+    print("\n" + "="*60)
+    print("\n🧪 Test 6: Deep Research")
+    print("-" * 60)
+    research_tool = DeepResearchTool(enable_web_search=False)
+    topic = "Functional Programming"
+    print(f"Topic: {topic}")
+    print("\n🔬 Researching...")
+    result = await research_tool.research(topic, ace.client, list(context.bullets.values()))
+    match result:
+        case Success(report):
+            lines = report.split('\n')
+            print('\n'.join(lines[:15]) + "\n...")
+        case Failure(error):
+            print(f"❌ {error}")
+    
+    # Final Stats
+    print("\n" + "="*60)
+    print("\n📊 Final Statistics")
+    print("-" * 60)
+    stats = ace.get_context_stats()
+    print(f"  Total bullets: {stats['total_bullets']}")
+    print(f"  Helpful bullets: {stats['helpful_bullets']}")
+    print(f"  Context version: {stats['version']}")
+    print(f"  Avg helpfulness: {stats['avg_helpfulness']:.2f}")
+    print("\n✅ All tests completed!")
+    print("="*60)
 
 async def interactive_mode(ace: ACEFramework) -> None:
     """Interactive chat mode"""
@@ -182,8 +253,8 @@ async def main():
         url="http://localhost:11434",
         model="qwen2.5-coder:1.5b",
         temperature=0.7,
-        max_tokens=256,
-        context_window=2048
+        max_tokens=128,
+        context_window=512
     )
     ace = ACEFramework(config)
     
