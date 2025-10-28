@@ -54,7 +54,7 @@ class OllamaClient:
         except Exception as e:
             return Failure(f"Connection failed: {str(e)}")
     
-    async def generate(self, prompt: str) -> Result[str, str]:
+    async def generate(self, prompt: str, enable_thinking: bool = False) -> Result[str, str]:
         """Generate response from Ollama"""
         if not self.session:
             return Failure("Client not initialized")
@@ -70,11 +70,16 @@ class OllamaClient:
             }
         }
         
+        if enable_thinking:
+            payload["options"]["enable_thinking"] = True
+        
+        timeout = 300 if enable_thinking else 120
+        
         try:
             async with self.session.post(
                 f"{self.config.url}/api/generate",
                 json=payload,
-                timeout=aiohttp.ClientTimeout(total=120)
+                timeout=aiohttp.ClientTimeout(total=timeout)
             ) as resp:
                 if resp.status == 200:
                     result = await resp.json()
@@ -85,8 +90,8 @@ class OllamaClient:
         except Exception as e:
             return Failure(f"Generation failed: {str(e)}")
     
-    async def generate_stream(self, prompt: str):
-        """Generate streaming response from Ollama"""
+    async def generate_stream(self, prompt: str, enable_thinking: bool = False):
+        """Generate streaming response from Ollama with thinking support"""
         if not self.session:
             yield Failure("Client not initialized")
             return
@@ -102,20 +107,40 @@ class OllamaClient:
             }
         }
         
+        if enable_thinking:
+            payload["options"]["enable_thinking"] = True
+        
+        timeout = 300 if enable_thinking else 120
+        
         try:
             import json
             async with self.session.post(
                 f"{self.config.url}/api/generate",
                 json=payload,
-                timeout=aiohttp.ClientTimeout(total=120)
+                timeout=aiohttp.ClientTimeout(total=timeout)
             ) as resp:
                 if resp.status == 200:
+                    in_thinking = False
                     async for line in resp.content:
                         if line:
                             try:
                                 data = json.loads(line.decode('utf-8'))
+                                
+                                # Handle thinking tokens
+                                if 'thinking' in data:
+                                    if not in_thinking:
+                                        yield Success("\n💭 [Thinking...] ")
+                                        in_thinking = True
+                                    yield Success(data['thinking'])
+                                    continue
+                                
+                                if in_thinking and 'response' in data:
+                                    yield Success("\n\n🤖 [Answer:] ")
+                                    in_thinking = False
+                                
                                 if 'response' in data:
                                     yield Success(data['response'])
+                                
                                 if data.get('done', False):
                                     break
                             except json.JSONDecodeError:

@@ -7,6 +7,7 @@ import asyncio
 import sys
 from ace_types import OllamaConfig, Success, Failure
 from ace import ACEFramework
+from tools import ThinkingTool, SearchTool, DeepResearchTool
 from imperative_shell import log_info, log_success, log_error
 
 async def demo_mode(ace: ACEFramework) -> None:
@@ -37,7 +38,11 @@ async def demo_mode(ace: ACEFramework) -> None:
 async def interactive_mode(ace: ACEFramework) -> None:
     """Interactive chat mode"""
     log_info("ACE Interactive Mode")
-    print("\nCommands: 'stats', 'help', 'exit'")
+    thinking_tool = ThinkingTool()
+    search_tool = SearchTool()
+    research_tool = DeepResearchTool()
+    thinking_mode = False
+    print("\nCommands: 'stats', 'help', 'exit', '/think', '/search', '/research', '/thinking on|off'")
     print("-" * 60)
     
     while True:
@@ -64,13 +69,73 @@ async def interactive_mode(ace: ACEFramework) -> None:
                 print("\n📖 ACE Framework Help")
                 print("  - Ask any question naturally")
                 print("  - 'stats' - Show context statistics")
+                print("  - '/think <query>' - Deep thinking mode")
+                print("  - '/search <query>' - Search in context")
+                print("  - '/research <topic>' - Deep research mode")
+                print("  - '/thinking on|off' - Toggle native thinking mode")
                 print("  - 'exit' - Exit system")
+                continue
+            
+            if user_input.lower().startswith('/thinking '):
+                mode = user_input[10:].strip().lower()
+                if mode == 'on':
+                    thinking_mode = True
+                    log_success("Native thinking mode enabled")
+                elif mode == 'off':
+                    thinking_mode = False
+                    log_success("Native thinking mode disabled")
+                else:
+                    log_error("Use: /thinking on or /thinking off")
+                continue
+            
+            if user_input.startswith('/think '):
+                query = user_input[7:]
+                print(f"\n🧠 Thinking:")
+                result = await thinking_tool.think(query, ace.client)
+                match result:
+                    case Success(response):
+                        print(response)
+                    case Failure(error):
+                        log_error(f"Error: {error}")
+                continue
+            
+            if user_input.startswith('/search '):
+                query = user_input[8:]
+                context = ace.curator.get_context()
+                results = search_tool.search(query, list(context.bullets.values()))
+                print(f"\n🔍 Search results:")
+                if not results:
+                    print("No results found.")
+                else:
+                    for i, r in enumerate(results, 1):
+                        print(f"{i}. {r['content'][:100]}... (relevance: {r['relevance']})")
+                continue
+            
+            if user_input.startswith('/research '):
+                topic = user_input[10:]
+                print(f"\n🔬 Researching:")
+                context = ace.curator.get_context()
+                result = await research_tool.research(topic, ace.client, list(context.bullets.values()))
+                match result:
+                    case Success(response):
+                        print(response)
+                    case Failure(error):
+                        log_error(f"Error: {error}")
                 continue
             
             # Process query with streaming
             print(f"\n🤖 ACE:")
-            async for chunk in ace.process_query_stream(user_input):
-                print(chunk, end='', flush=True)
+            if thinking_mode:
+                async for result in ace.client.generate_stream(user_input, enable_thinking=True):
+                    match result:
+                        case Success(chunk):
+                            print(chunk, end='', flush=True)
+                        case Failure(error):
+                            log_error(f"Error: {error}")
+                            break
+            else:
+                async for chunk in ace.process_query_stream(user_input):
+                    print(chunk, end='', flush=True)
             print()  # New line
             
             # Show stats
