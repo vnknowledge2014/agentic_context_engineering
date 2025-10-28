@@ -39,10 +39,11 @@ async def interactive_mode(ace: ACEFramework) -> None:
     """Interactive chat mode"""
     log_info("ACE Interactive Mode")
     thinking_tool = ThinkingTool()
-    search_tool = SearchTool()
-    research_tool = DeepResearchTool()
+    web_search_enabled = False
+    search_tool = SearchTool(enable_web_search=web_search_enabled)
+    research_tool = DeepResearchTool(enable_web_search=web_search_enabled)
     thinking_mode = False
-    print("\nCommands: 'stats', 'help', 'exit', '/think', '/search', '/research', '/thinking on|off'")
+    print("\nCommands: 'stats', 'help', 'exit', '/think', '/search', '/research', '/thinking on|off', '/web on|off'")
     print("-" * 60)
     
     while True:
@@ -70,9 +71,10 @@ async def interactive_mode(ace: ACEFramework) -> None:
                 print("  - Ask any question naturally")
                 print("  - 'stats' - Show context statistics")
                 print("  - '/think <query>' - Deep thinking mode")
-                print("  - '/search <query>' - Search in context")
+                print("  - '/search <query>' - Search in context/web")
                 print("  - '/research <topic>' - Deep research mode")
                 print("  - '/thinking on|off' - Toggle native thinking mode")
+                print("  - '/web on|off' - Toggle web search (like OpenAI)")
                 print("  - 'exit' - Exit system")
                 continue
             
@@ -86,6 +88,22 @@ async def interactive_mode(ace: ACEFramework) -> None:
                     log_success("Native thinking mode disabled")
                 else:
                     log_error("Use: /thinking on or /thinking off")
+                continue
+            
+            if user_input.lower().startswith('/web '):
+                mode = user_input[5:].strip().lower()
+                if mode == 'on':
+                    web_search_enabled = True
+                    search_tool = SearchTool(enable_web_search=True)
+                    research_tool = DeepResearchTool(enable_web_search=True)
+                    log_success("🌐 Web search enabled (like OpenAI)")
+                elif mode == 'off':
+                    web_search_enabled = False
+                    search_tool = SearchTool(enable_web_search=False)
+                    research_tool = DeepResearchTool(enable_web_search=False)
+                    log_success("Web search disabled")
+                else:
+                    log_error("Use: /web on or /web off")
                 continue
             
             if user_input.startswith('/think '):
@@ -102,13 +120,16 @@ async def interactive_mode(ace: ACEFramework) -> None:
             if user_input.startswith('/search '):
                 query = user_input[8:]
                 context = ace.curator.get_context()
-                results = search_tool.search(query, list(context.bullets.values()))
-                print(f"\n🔍 Search results:")
+                print(f"\n🔍 Searching...")
+                results = await search_tool.search(query, list(context.bullets.values()))
                 if not results:
                     print("No results found.")
                 else:
                     for i, r in enumerate(results, 1):
-                        print(f"{i}. {r['content'][:100]}... (relevance: {r['relevance']})")
+                        source = "🌐" if r['source'] == 'web' else "📚"
+                        print(f"{i}. {source} {r['content'][:100]}...")
+                        if 'url' in r and r['url']:
+                            print(f"   🔗 {r['url']}")
                 continue
             
             if user_input.startswith('/research '):
