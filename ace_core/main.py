@@ -253,8 +253,8 @@ async def main():
         url="http://localhost:11434",
         model="qwen2.5-coder:1.5b",
         temperature=0.7,
-        max_tokens=128,
-        context_window=512
+        max_tokens=512,
+        context_window=2048
     )
     ace = ACEFramework(config)
     
